@@ -74,7 +74,7 @@ function dreView(rows,inc,exp){
 }
 
 function showDetailModal(category,kind){
- const isCash=kind==='dfc', cashDate=t=>t.cashDate!==undefined?t.cashDate:((t.pay&&t.pay!=='Cartão de crédito'&&t.type!=='movement')?t.date:null);
+ const isCash=kind==='dfc', cashDate=t=>t.cashDate!==undefined?t.cashDate:(t.cash===false?null:((t.cash===true||t.type==='movement')?t.date:((t.pay&&t.pay!=='Cartão de crédito')?t.date:null)));
  const getMonth=t=>(isCash?(cashDate(t)||''):(t.competence||t.date||'')).slice(0,7);
  const relevant=data.filter(t=>t.type==='expense'&&(t.cat||'Sem categoria')===category&&(isCash?!!cashDate(t):t.dre!==false));
  const months=[];const base=new Date(filterMonth+'-02T12:00:00');for(let i=11;i>=0;i--){const d=new Date(base.getFullYear(),base.getMonth()-i,1),key=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');months.push({key,label:d.toLocaleDateString('pt-BR',{month:'short',year:'2-digit'}),value:relevant.filter(t=>getMonth(t)===key).reduce((a,t)=>a+Number(t.amount||0),0)})}
@@ -84,9 +84,9 @@ function showDetailModal(category,kind){
 }
 function investmentPosition(){return '<section class="card"><h3>Patrimônio investido · última posição informada</h3><p class="muted">Relatório Sicredi de 15/10/2026. Valores brutos informativos; não são caixa disponível nem resgates líquidos.</p><div class="stats"><div class="stat"><small>Fundos Sicredi · saldo bruto</small><strong>'+money(53677.70)+'</strong></div><div class="stat"><small>Ibovespa FIA</small><strong>'+money(3221.36)+'</strong></div><div class="stat"><small>CDI CIC FIRF</small><strong>'+money(7025.93)+'</strong></div><div class="stat"><small>Taxa Selic CIC FIRF</small><strong>'+money(28151.29)+'</strong></div></div><div class="tablewrap"><table><thead><tr><th>Aplicação</th><th class="right">Saldo bruto em 15/10</th></tr></thead><tbody><tr><td>Sicredi Ibovespa FIA RL</td><td class="right">'+money(3221.36)+'</td></tr><tr><td>Sicredi CDI+ FIC FIRF RL</td><td class="right">'+money(532.05)+'</td></tr><tr><td>Sicredi CDI CIC FIRF RL</td><td class="right">'+money(7025.93)+'</td></tr><tr><td>Sicredi Taxa Selic CIC FIRF RL</td><td class="right">'+money(28151.29)+'</td></tr><tr><td>Sicredi Crédito Privado Bancário FIRF RL</td><td class="right">'+money(14747.07)+'</td></tr><tr style="font-weight:800"><td>Total bruto (relatório)</td><td class="right">'+money(53677.70)+'</td></tr></tbody></table></div></section>'}
 function dfcView(){
- const cashDate=t=>t.cashDate!==undefined?t.cashDate:((t.pay&&t.pay!=='Cartão de crédito'&&t.type!=='movement')?t.date:null);
+ const cashDate=t=>t.cashDate!==undefined?t.cashDate:(t.cash===false?null:((t.cash===true||t.type==='movement')?t.date:((t.pay&&t.pay!=='Cartão de crédito')?t.date:null)));
  const mr=data.filter(t=>(cashDate(t)||'').slice(0,7)===filterMonth);
- const ins=mr.filter(t=>t.type==='income').reduce((a,t)=>a+Number(t.amount||0),0), outs=mr.filter(t=>t.type==='expense').reduce((a,t)=>a+Number(t.amount||0),0), invest=mr.filter(t=>t.type==='investment').reduce((a,t)=>a+Number(t.amount||0),0), movement=mr.filter(t=>t.type==='movement').reduce((a,t)=>a+Number(t.amount||0),0);
+ const ins=mr.filter(t=>t.type==='income').reduce((a,t)=>a+Number(t.amount||0),0), outs=mr.filter(t=>t.type==='expense').reduce((a,t)=>a+Number(t.amount||0),0), invest=mr.filter(t=>t.type==='investment').reduce((a,t)=>a+Number(t.amount||0),0), movement=mr.filter(t=>t.type==='movement').reduce((a,t)=>a+((t.direction==='out'||/pagamento de cart[aã]o/i.test((t.cat||'')+' '+(t.desc||''))?-1:1)*Number(t.amount||0)),0);
  const opening=Number(balances.checkingOpen||0)+Number(balances.flashOpen||0), close=opening+ins-outs-invest+movement, by={};
  mr.filter(t=>t.type==='expense').forEach(t=>{const k=t.cat||'Sem categoria';by[k]=(by[k]||0)+Number(t.amount||0)});
  const line=(label,val,cls='',extra='')=>'<tr '+extra+'><td>'+label+'</td><td class="right '+cls+'">'+money(val)+'</td></tr>';
@@ -101,7 +101,7 @@ function dfcView(){
  line('Saldo inicial consolidado',opening,'','style="font-weight:700"')+
  line('Entradas de caixa',ins,'income','style="font-weight:700"')+
  mr.filter(t=>t.type==='income').map(t=>line('↳ '+esc(t.cat||'Entrada')+' · '+esc(t.desc),Number(t.amount||0),'income')).join('')+
- line('<button class="detail-trigger" data-detail="" data-kind="dfc-total">Saídas de caixa</button>',-outs,'expense','class="total-row"')+
+ line('<button class="detail-trigger" data-detail="" data-kind="dfc-expenses">Saídas de caixa</button>',-outs,'expense','class="total-row"')+
  catRows.map(([k,v])=>line('↳ <button class="detail-trigger" data-detail="'+esc(k)+'" data-kind="dfc">'+esc(k)+'</button>',-v,'expense')).join('')+
  line('<button class="detail-trigger" data-detail="" data-kind="dfc-investment">Aplicações/investimentos realizados</button>',-invest)+line('<button class="detail-trigger" data-detail="" data-kind="dfc-movement">Outras movimentações líquidas</button>',movement)+
  line('<button class="detail-trigger" data-detail="" data-kind="dfc-total">Saldo final calculado</button>',close,'','class="total-row"')+
