@@ -75,7 +75,7 @@ function dreView(rows,inc,exp){
 
 function showDetailModal(category,kind){
  const isCash=kind.startsWith('dfc');
- const cashDate=t=>t.cashDate!==undefined?t.cashDate:(t.cash===false?null:((t.cash===true||t.type==='movement')?t.date:((t.pay&&t.pay!=='Cartão de crédito')?t.date:null)));
+ const cashDate=t=>t.cashDate!==undefined?t.cashDate:(t.cash===false?null:((t.cash===true||t.type==='movement'||t.type==='investment')?t.date:((t.pay&&t.pay!=='Cartão de crédito')?t.date:null)));
  const getMonth=t=>(isCash?(cashDate(t)||''):(t.competence||t.date||'')).slice(0,7);
  const matches=t=>{
   if(isCash&&!cashDate(t))return false;
@@ -103,7 +103,7 @@ function showDetailModal(category,kind){
 }
 function investmentPosition(){return '<section class="card"><h3>Patrimônio investido · última posição informada</h3><p class="muted">Relatório Sicredi de 15/10/2026. Valores brutos informativos; não são caixa disponível nem resgates líquidos.</p><div class="stats"><div class="stat"><small>Fundos Sicredi · saldo bruto</small><strong>'+money(53677.70)+'</strong></div><div class="stat"><small>Ibovespa FIA</small><strong>'+money(3221.36)+'</strong></div><div class="stat"><small>CDI CIC FIRF</small><strong>'+money(7025.93)+'</strong></div><div class="stat"><small>Taxa Selic CIC FIRF</small><strong>'+money(28151.29)+'</strong></div></div><div class="tablewrap"><table><thead><tr><th>Aplicação</th><th class="right">Saldo bruto em 15/10</th></tr></thead><tbody><tr><td>Sicredi Ibovespa FIA RL</td><td class="right">'+money(3221.36)+'</td></tr><tr><td>Sicredi CDI+ FIC FIRF RL</td><td class="right">'+money(532.05)+'</td></tr><tr><td>Sicredi CDI CIC FIRF RL</td><td class="right">'+money(7025.93)+'</td></tr><tr><td>Sicredi Taxa Selic CIC FIRF RL</td><td class="right">'+money(28151.29)+'</td></tr><tr><td>Sicredi Crédito Privado Bancário FIRF RL</td><td class="right">'+money(14747.07)+'</td></tr><tr style="font-weight:800"><td>Total bruto (relatório)</td><td class="right">'+money(53677.70)+'</td></tr></tbody></table></div></section>'}
 function dfcView(){
- const cashDate=t=>t.cashDate!==undefined?t.cashDate:(t.cash===false?null:((t.cash===true||t.type==='movement')?t.date:((t.pay&&t.pay!=='Cartão de crédito')?t.date:null)));
+ const cashDate=t=>t.cashDate!==undefined?t.cashDate:(t.cash===false?null:((t.cash===true||t.type==='movement'||t.type==='investment')?t.date:((t.pay&&t.pay!=='Cartão de crédito')?t.date:null)));
  const mr=data.filter(t=>(cashDate(t)||'').slice(0,7)===filterMonth);
  const ins=mr.filter(t=>t.type==='income').reduce((a,t)=>a+Number(t.amount||0),0), outs=mr.filter(t=>t.type==='expense').reduce((a,t)=>a+Number(t.amount||0),0), invest=mr.filter(t=>t.type==='investment').reduce((a,t)=>a+Number(t.amount||0),0), movement=mr.filter(t=>t.type==='movement').reduce((a,t)=>a+((t.direction==='out'||/pagamento de cart[aã]o/i.test((t.cat||'')+' '+(t.desc||''))?-1:1)*Number(t.amount||0)),0);
  const opening=Number(balances.checkingOpen||0)+Number(balances.flashOpen||0), close=opening+ins-outs-invest+movement, by={};
