@@ -1,4 +1,4 @@
-const CACHE='meu-painel-v2-cache-v11';
+const CACHE='meu-painel-v2-cache-v12';
 self.addEventListener('install',event=>{self.skipWaiting();event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(['./','./manifest.json','./icon.svg'])))});
 self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith('meu-painel-v2-cache-')).map(key=>caches.delete(key)))).then(()=>self.clients.claim())));
 self.addEventListener('fetch',event=>{
