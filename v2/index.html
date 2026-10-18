@@ -61,6 +61,21 @@ function routeSvg(w){if(!w.routePoints||w.routePoints.length<2)return '';const x
 function haversine(a,b,c,d){const R=6371,rad=x=>x*Math.PI/180,dl=rad(c-a),dn=rad(d-b);return 2*R*Math.asin(Math.sqrt(Math.sin(dl/2)**2+Math.cos(rad(a))*Math.cos(rad(c))*Math.sin(dn/2)**2))}
 function stopGPS(){if(gpsWatch!==null)navigator.geolocation.clearWatch(gpsWatch);if(gpsTimer)clearInterval(gpsTimer);const duration=Math.max(1,Math.round((Date.now()-gpsStart)/60000));if(gpsDistance>0||duration>1){workoutsData.push({id:"w-"+Date.now(),type:"Corrida GPS",date:now(),name:"Corrida registrada por GPS",distance:gpsDistance.toFixed(2),duration:String(duration),note:"Distância estimada; pontos de rota coletados: "+gpsPoints.length,routePoints:gpsPoints.map(p=>({lat:p.lat,lon:p.lon}))});localStorage.setItem(WORKKEY,JSON.stringify(workoutsData));message="Corrida GPS salva no histórico."}gpsWatch=null;gpsTimer=null;gpsStart=null;render()}
 if(!data.some(t=>t.date==='2026-10-17'&&t.desc==='Mercado'&&Number(t.amount)===77.99)){data.push({id:'chat-20261017-market-7799',date:'2026-10-17',competence:'2026-10-17',desc:'Mercado',amount:77.99,type:'expense',cat:'Mercado',pay:'Cartão de crédito',dre:true,recurrence:'variable'});}const recovered=[
+{id:'v2-sep-20260904-alimentacao-3400',date:'2026-09-04',desc:'Alimentação',amount:34,cat:'Alimentação',pay:'Não informado',recurrence:'variable'},
+{id:'v2-sep-20260908-valor-nao-identificado-8650',date:'2026-09-08',desc:'Gasto não identificado',amount:86.50,cat:'A classificar',pay:'Não informado',recurrence:'variable',note:'Valor informado; descrição/categoria pendente.'},
+{id:'v2-sep-20260908-blablacar-9000',date:'2026-09-08',desc:'BlaBlaCar',amount:90,cat:'Transporte — Viagens',pay:'Não informado',recurrence:'variable'},
+{id:'v2-sep-20260908-recebimento-nao-identificado-6500',date:'2026-09-08',desc:'Recebimento não identificado',amount:65,type:'income',cat:'Receita a classificar',pay:'Não informado',recurrence:'variable',note:'Entrada informada; origem pendente.'},
+{id:'v2-sep-20260908-paradouro-1300',date:'2026-09-08',desc:'Lanche — Paradouro Bortolini',amount:13,cat:'Alimentação',pay:'Não informado',recurrence:'variable'},
+{id:'v2-sep-20260908-almoco-4800',date:'2026-09-08',desc:'Almoço',amount:48,cat:'Alimentação',pay:'Não informado',recurrence:'variable'},
+{id:'v2-sep-20260909-tri-5300',date:'2026-09-09',desc:'Passagem / TRI',amount:53,cat:'Transporte — Porto Alegre',pay:'Pix',recurrence:'variable'},
+{id:'v2-sep-20260910-gremio-ingresso-2000',date:'2026-09-10',desc:'Ingresso jogo do Grêmio',amount:20,cat:'Lazer / Esportes',pay:'Cartão de crédito',recurrence:'variable'},
+{id:'v2-sep-20260912-zaffari-10953',date:'2026-09-12',desc:'Zaffari',amount:109.53,cat:'Mercado',pay:'Flash',recurrence:'variable'},
+{id:'v2-sep-20260914-passagem-1060',date:'2026-09-14',desc:'Passagem',amount:10.60,cat:'Transporte — Porto Alegre',pay:'Não informado',recurrence:'variable'},
+{id:'v2-sep-20260916-fone-6500',date:'2026-09-16',desc:'Fone',amount:65,cat:'Compras',pay:'Pix',recurrence:'variable'},
+{id:'v2-sep-20260916-bebidas-3050',date:'2026-09-16',desc:'Bebidas para lazer',amount:30.50,cat:'Lazer',pay:'Pix',recurrence:'variable'},
+{id:'v2-sep-20260916-lanche-1000',date:'2026-09-16',desc:'Lanche',amount:10,cat:'Alimentação',pay:'Pix',recurrence:'variable'},
+{id:'v2-sep-20260917-almoco-4800',date:'2026-09-17',desc:'Almoço',amount:48,cat:'Alimentação',pay:'Flash',recurrence:'variable'},
+
 { id:'v2-chat-20261009-cuias-presentes-17400',date:'2026-10-09',desc:'Cuias de presente — JP e Júlia',amount:174,cat:'Presentes',pay:'Cartão de crédito',recurrence:'variable'},
 { id:'v2-chat-20261017-monitor-bettdow-41900',date:'2026-10-17',desc:'Monitor portátil Bettdow 15,6 Full HD',amount:419,cat:'Compras — Eletrônicos',pay:'Cartão de crédito',recurrence:'variable',note:'Compra em 2 parcelas de R$ 209,50; despesa registrada uma vez no DRE.'},
 
